@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"        
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/rounded_background"
+    android:padding="8dp">
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal"
+      android:gravity="start|center_vertical"
+      android:layout_gravity="start">
+
+    <com.google.android.material.button.MaterialButton
+        android:textAllCaps="false"
+        app:backgroundTint="@color/material_blue_grey_800" 
+        style="@style/Widget.App.Button.IconLeft"
+        app:icon="@drawable/btn_radio_on_dark"
+        app:iconGravity="textStart"
+        android:id="@+id/btnNoRepeat"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Does not repeat" 
+        android:tag="NoRepeat"
+        android:gravity="start|center_vertical"/>
+  </LinearLayout>
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal"
+      android:gravity="start|center_vertical">
+
+    <com.google.android.material.button.MaterialButton
+        android:textAllCaps="false" 
+        app:backgroundTint="@color/material_blue_grey_800" 
+        style="@style/Widget.App.Button.IconLeft"
+        app:icon="@drawable/btn_radio_off_dark"
+        app:iconGravity="textStart"
+        android:id="@+id/btnEvery5Min"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Every 5 Minutes" 
+        android:tag="Every5Min"
+        android:gravity="start|center_vertical"/>
+  </LinearLayout>
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal"
+      android:gravity="start|center_vertical">
+
+    <com.google.android.material.button.MaterialButton
+        android:textAllCaps="false" 
+        app:backgroundTint="@color/material_blue_grey_800" 
+        style="@style/Widget.App.Button.IconLeft"
+        app:icon="@drawable/btn_radio_off_dark"
+        app:iconGravity="textStart"
+        android:id="@+id/btnEvery15Min"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Every 15 Minutes" 
+        android:tag="Every15Min"
+        android:gravity="start|center_vertical"/>
+  </LinearLayout>
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal"
+      android:gravity="start|center_vertical">
+
+    <com.google.android.material.button.MaterialButton
+        android:textAllCaps="false" 
+        app:backgroundTint="@color/material_blue_grey_800" 
+        style="@style/Widget.App.Button.IconLeft"
+        app:icon="@drawable/btn_radio_off_dark"
+        app:iconGravity="textStart"
+        android:id="@+id/btnEvery30Min"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Every 30 Minutes"
+        android:tag="Every30Min"
+        android:gravity="start|center_vertical"/>
+  </LinearLayout>
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal"
+      android:gravity="start|center_vertical">
+
+    <com.google.android.material.button.MaterialButton
+        android:textAllCaps="false"
+        app:backgroundTint="@color/material_blue_grey_800"
+        style="@style/Widget.App.Button.IconLeft"
+        app:icon="@drawable/btn_radio_off_dark"
+        app:iconGravity="textStart"
+        android:id="@+id/btnEveryHour"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Every Hour"
+        android:tag="Every1Hr"
+        android:gravity="start|center_vertical"/>
+  </LinearLayout>
+</LinearLayout>

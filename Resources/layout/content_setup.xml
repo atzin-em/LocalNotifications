@@ -1,0 +1,145 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:minWidth="15dp"
+    android:minHeight="15dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/gridSetup"
+    android:orientation="vertical"
+    android:padding="15dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_horizontal">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonSelectNetworks"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/Widget.MaterialComponents.Button"
+            android:text="Select Local Networks"
+            android:layout_weight="0"
+            android:gravity="start|center_vertical"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonNetScan"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/Widget.App.Button.OutlinedButton.IconOnly"
+            app:icon="@drawable/ic_restart"
+            android:layout_weight="0"
+            android:layout_marginLeft="15dp"
+            android:minWidth="38dp"
+            android:minHeight="38dp"
+            android:gravity="end|center_vertical"/>
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+       <!-- <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/displaynameInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/repeatButton"
+            style="@style/Base.Widget.MaterialComponents.TextInputLayout"
+            />-->
+
+        <EditText
+            android:id="@+id/inputTextApi"
+            android:hint="ex. http://0.0.0.0:5000/"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:inputType="text"/>
+        <Button
+            android:id="@+id/buttonSubmitApi"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="Set API"/>
+    </LinearLayout>
+
+    <LinearLayout
+        
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/inputTextApiKeyHeader"
+            android:hint="Header"
+            android:inputType="text"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+        <EditText
+            android:id="@+id/inputTextApiKey"
+            android:hint="Secret"
+            android:inputType="textPassword"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+
+        <Button
+            android:id="@+id/buttonSubmitApiKey"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="Set Secret"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/inputTextKey"
+            android:hint="Key"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:inputType="text"/>
+
+        <EditText
+            android:id="@+id/inputTextValue"
+            android:hint="Value"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:inputType="text"/>
+
+        <Button
+            android:id="@+id/buttonSubmitKeyVal"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="Add Response"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:paddingBottom="15dp">
+
+        <ListView
+            android:id="@+id/listView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/back"
+            android:divider="@android:color/darker_gray"
+            android:dividerHeight="1dp"
+            android:scrollbars="vertical"
+            android:overScrollMode="ifContentScrolls" />
+
+    </LinearLayout>
+
+</LinearLayout>

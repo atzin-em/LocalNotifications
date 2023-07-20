@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="start|center_vertical"
+        android:layout_gravity="start">
+
+      <com.google.android.material.button.MaterialButton
+          android:textAllCaps="false"
+          app:backgroundTint="@color/material_blue_grey_800" 
+          style="@style/Widget.App.Button.IconLeft"
+          app:icon="@drawable/btn_radio_off_dark"
+          app:iconGravity="textStart"
+          android:id="@+id/btnNetSelect"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:gravity="start|center_vertical"
+          android:tag="false"/>
+</LinearLayout>
