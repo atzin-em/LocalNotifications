@@ -36,7 +36,7 @@
   <h3 align="center">LocalNotifications</h3>
 
   <p align="center">
-    Android push notifications for local network api server.
+    Android push notifications for local network API server.
     <br />
     <br />
     <br />
