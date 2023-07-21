@@ -135,27 +135,12 @@ _This is a general setup for how to get utility from the application._
 
 
 
-<!-- USAGE EXAMPLES -->
-## Usage
-
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
-
-_For more examples, please refer to the [Documentation](https://example.com)_
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
 <!-- ROADMAP -->
 ## Roadmap
 
-- [x] Add Changelog
-- [x] Add back to top links
-- [ ] Add Additional Templates w/ Examples
-- [ ] Add "components" document to easily copy & paste sections of the readme
-- [ ] Multi-language Support
-    - [ ] Chinese
-    - [ ] Spanish
+- [ ] Add Changelog
+- [ ] Add Custom Repeat Intervals
+- [ ] Add Comparators for the values check of the notifications
 
 See the [open issues](https://github.com/atzin-em/LocalNotifications/issues) for a full list of proposed features (and known issues).
 
@@ -188,9 +173,12 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+
+
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
 
+* [Best README Template](https://github.com/othneildrew/Best-README-Template/blob/master/README.md)
 * [Choose an Open Source License](https://choosealicense.com)
 * [GitHub Emoji Cheat Sheet](https://www.webpagefx.com/tools/emoji-cheat-sheet)
 * [Malven's Flexbox Cheatsheet](https://flexbox.malven.co/)
