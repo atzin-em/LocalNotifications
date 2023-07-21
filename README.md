@@ -120,7 +120,7 @@ What you will need:
 _This is a general setup for how to get utility from the application._
 
 1. Download python API server script
-2. Configure the script to return receive POST data from your IOT device/s
+2. Configure the script to return receive POST data from your IOT device(s)
    ```py
    
    ```
