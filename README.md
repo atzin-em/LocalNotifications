@@ -92,7 +92,6 @@ Use Cases:
 
 ### Built With
 
-This section should list any major frameworks/libraries used to bootstrap your project. Leave any add-ons/plugins for the acknowledgements section. Here are a few examples.
 
 * [![.][C#]][C#-url]
 * [![.][Xamarin]][Xamarin-url]
@@ -116,21 +115,21 @@ What you will need:
 
 ### Setup
 
-_Th_
+_This is a general setup for how to get utility from the application._
 
-1. Get a free API Key at [https://example.com](https://example.com)
-2. Clone the repo
-   ```sh
-   git clone https://github.com/your_username_/Project-Name.git
+1. Download python API server script
+2. Configure the script to return receive POST data from your IOT device/s
+   ```py
+   
    ```
-3. Install NPM packages
-   ```sh
-   npm install
+3. Configure the script to return desired data when GET request is made
+   ```py
+   
    ```
-4. Enter your API in `config.js`
-   ```js
-   const API_KEY = 'ENTER YOUR API';
-   ```
+4. Run the script on a network device (ideally this is a device that remains continuously on e.g. PiHole, OpenWRT Router)
+5. Ensure the aforementioned network device has a static ip
+6. Install the latest version of LocalNotifications from releases
+   
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -189,23 +188,8 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-
-
-<!-- CONTACT -->
-## Contact
-
-Your Name - [@your_twitter](https://twitter.com/your_username) - email@example.com
-
-Project Link: [https://github.com/your_username/repo_name](https://github.com/your_username/repo_name)
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
-
-Use this space to list resources you find helpful and would like to give credit to. I've included a few of my favorites to kick things off!
 
 * [Choose an Open Source License](https://choosealicense.com)
 * [GitHub Emoji Cheat Sheet](https://www.webpagefx.com/tools/emoji-cheat-sheet)
@@ -244,7 +228,3 @@ Use this space to list resources you find helpful and would like to give credit 
 [AndroidX-url]: https://developer.android.com/jetpack/androidx
 [Python3]: https://img.shields.io/badge/python3-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54
 [Python3-url]: https://www.python.org/
-
-[Next.js]: https://img.shields.io/badge/next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white
-[Next-url]: https://nextjs.org/
-[C#]: 
