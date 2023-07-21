@@ -30,7 +30,9 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-
+  <a href="https://github.com/atzin-em/LocalNotifications">
+    <img src="Resources/drawable/LocalNotifications.ico" alt="Logo" width="80" height="80">
+  </a>
   <h3 align="center">LocalNotifications</h3>
 
   <p align="center">
