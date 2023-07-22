@@ -97,7 +97,7 @@ namespace LocalNotifications
             if (!isServiceRunning)
             {
                 // Initialize the dictionary for notification state
-                foreach (ResponseNotification response in MainActivity.responseNotifications)
+                foreach (ResponseNotification response in MainActivity.ResponseNotifications)
                 {
                     NotificationState.Dict[response] = false;
                     NotificationState.OldDict[response] = false;
@@ -106,7 +106,7 @@ namespace LocalNotifications
                 isServiceRunning = true;
 
                 // Group response notifications based on the repeat interval
-                intervalGroups = MainActivity.responseNotifications.GroupByInterval();
+                intervalGroups = MainActivity.ResponseNotifications.GroupByInterval();
                 notifyServices = new List<Intent>();
 
                 // Find the minimum non-zero repeat interval
@@ -208,7 +208,7 @@ namespace LocalNotifications
             await Task.Delay(5000);
 
             // Check if there is a valid internet connection (MainActivity.validConnection) to proceed with the background task.
-            if (MainActivity.validConnection)
+            if (MainActivity.ValidConnection)
             {
                 // Log a debug message to indicate that the background get request is running.
                 MainActivity.LogDebug("Running background get request");

@@ -13,14 +13,12 @@ using AndroidX.Core.App;
 using Toolbar = AndroidX.AppCompat.Widget.Toolbar;
 using AndroidX.Core.View;
 using Android.Views;
-using String = System.String;
 using Xamarin.Essentials;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
 using Android.Net.Wifi;
 using Android.Views.InputMethods;
-using Java.Lang;
 
 namespace LocalNotifications
 {
@@ -37,20 +35,20 @@ namespace LocalNotifications
 
         private Button buttonGet;
         private static TextView textviewLog;
-        private static List<Tuple<DateTime, string>> logList = new List<Tuple<DateTime, string>>();
+        private static readonly List<Tuple<DateTime, string>> logList = new();
         
         private Button buttonScanNetworks;
         private Button buttonSelectNetworks;
         private PopupWindow popupWindow;
         public static WifiManager wifiManager;
-        public static bool validConnection { 
+        public static bool ValidConnection { 
             get 
             {
-                if (wifiList != null && currentBSSID != null)
+                if (WifiList != null && currentBSSID != null)
                 {
-                    if (wifiList.ContainsKey(currentBSSID))
+                    if (WifiList.ContainsKey(currentBSSID))
                     {
-                        return wifiList[currentBSSID].Item2;
+                        return WifiList[currentBSSID].Item2;
                     } else
                     {
                         return false;
@@ -64,8 +62,8 @@ namespace LocalNotifications
         }
         public static string currentBSSID = "";
         private ListView listviewNetworks;
-        private static Dictionary<string, Tuple<string, bool>> _wifiList = new Dictionary<string, Tuple<string, bool>>();
-        public static Dictionary<string, Tuple<string, bool>> wifiList { 
+        private static Dictionary<string, Tuple<string, bool>> _wifiList = new();
+        public static Dictionary<string, Tuple<string, bool>> WifiList { 
             get { return _wifiList; }
             set { _wifiList = value; } 
         }
@@ -79,7 +77,7 @@ namespace LocalNotifications
         private EditText inputTextValue;
         private Button buttonSubmitKeyVal;
         private static ListView listViewResponses;
-        public static ResponseNotifications responseNotifications { 
+        public static ResponseNotifications ResponseNotifications { 
             get 
             {
                 if (listViewResponses != null)
@@ -109,8 +107,8 @@ namespace LocalNotifications
 
             var intent = new Android.Content.Intent(this, typeof(ServiceController));
             StartService(intent);
-            responseNotifications.ItemDeleted += ResponseNotifications_ItemDeleted;
-            responseNotifications.ItemChanged += ResponseNotifications_ItemChanged;
+            ResponseNotifications.ItemDeleted += ResponseNotifications_ItemDeleted;
+            ResponseNotifications.ItemChanged += ResponseNotifications_ItemChanged;
         }
 
         protected override void OnPostCreate(Bundle savedInstanceState)
@@ -119,7 +117,7 @@ namespace LocalNotifications
             SetupSideDrawer();
             mDrawerList.SetItemChecked(0, true);
             InitSetupLayout();
-            initSavedData();
+            InitSavedData();
         }
 
         private void ResponseNotifications_ItemChanged()
@@ -130,7 +128,7 @@ namespace LocalNotifications
 
         private void ResponseNotifications_ItemDeleted()
         {
-            listViewResponses.Adapter = new ResponsesItemCustomAdapter(this, responseNotifications);
+            listViewResponses.Adapter = new ResponsesItemCustomAdapter(this, ResponseNotifications);
             ResponseNotifications dataStore = ((ResponsesItemCustomAdapter)listViewResponses.Adapter).responseItems;
             StoreSetupData("ResponseNotifications", JsonConvert.SerializeObject(dataStore.GetList()));
         }
@@ -147,12 +145,12 @@ namespace LocalNotifications
 
         private ResponseNotifications AddResponseNotification(string key, string val)
         {
-            responseNotifications.Add(key, val);
-            listViewResponses.Adapter = new ResponsesItemCustomAdapter(this, responseNotifications);
-            return responseNotifications;
+            ResponseNotifications.Add(key, val);
+            listViewResponses.Adapter = new ResponsesItemCustomAdapter(this, ResponseNotifications);
+            return ResponseNotifications;
         }
 
-        private void initSavedData()
+        private void InitSavedData()
         {
             listViewResponses = FindViewById<ListView>(Resource.Id.listView);
             inputTextApi.Text = GetSetupData("ApiUrl").Result;
@@ -162,7 +160,7 @@ namespace LocalNotifications
             var wifiData = GetSetupData("WifiList").Result;
             if (wifiData != null)
             {
-                wifiList = JsonConvert.DeserializeObject<Dictionary<string, Tuple<string, bool>>>(wifiData);
+                WifiList = JsonConvert.DeserializeObject<Dictionary<string, Tuple<string, bool>>>(wifiData);
             }
             
             string notificationData = GetSetupData("ResponseNotifications").Result;
@@ -220,12 +218,29 @@ namespace LocalNotifications
 
         private void GetWifi()
         {
-            wifiManager = (WifiManager)GetSystemService(WifiService);
-            WifiScanReceiver wifiScanReceiver = new WifiScanReceiver(wifiManager);
-            RegisterReceiver(wifiScanReceiver,
-                    new IntentFilter(WifiManager.ScanResultsAvailableAction));
-            WifiScan();
+            const int RequestLocationId = 0;
 
+            var locationPermission = Manifest.Permission.AccessFineLocation;
+            if (CheckSelfPermission(locationPermission) != Android.Content.PM.Permission.Granted)
+            {
+                RequestPermissions(new string[] { locationPermission }, RequestLocationId);
+            }
+
+            wifiManager = (WifiManager)GetSystemService(WifiService);
+            wifiManager.SetWifiEnabled(true);
+            WifiScanReceiver wifiScanReceiver = new(wifiManager);
+            RegisterReceiver(wifiScanReceiver, new IntentFilter(WifiManager.ScanResultsAvailableAction));
+            WifiScan();
+        }
+
+        public override void OnRequestPermissionsResult(int requestCode, string[] permissions, Android.Content.PM.Permission[] grantResults)
+        {
+            base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
+            if (requestCode != 0 && grantResults[0] != Android.Content.PM.Permission.Granted)
+            {
+                // Handle the case when the user denies the location permission.
+                Toast.MakeText(this, "Location permission denied. Unable to scan Wi-Fi networks.", ToastLength.Short).Show();
+            }
         }
 
         private void WifiScan()
@@ -245,7 +260,7 @@ namespace LocalNotifications
             popupWindow.ShowAsDropDown(anchor, (anchor.MeasuredWidth / 5) * -1, 0, GravityFlags.Center);
 
             listviewNetworks = popupView.FindViewById<ListView>(Resource.Id.listviewNetworks);
-            NetworksItemCustomAdapter adapter = new NetworksItemCustomAdapter(this, Resource.Menu.popup_menu_networks, wifiList);
+            NetworksItemCustomAdapter adapter = new(this, Resource.Menu.popup_menu_networks, WifiList);
             adapter.networksListChanged += Adapter_networksListChanged;
             listviewNetworks.Adapter = adapter;
         }
@@ -381,14 +396,14 @@ namespace LocalNotifications
                 drawerItem[i] = new DataModel(mNavigationDrawerItemTitles[i]);
             }
 
-            DrawerItemCustomAdapter adapter = new DrawerItemCustomAdapter(this, Resource.Menu.list_view_drawer, drawerItem);
+            DrawerItemCustomAdapter adapter = new(this, Resource.Menu.list_view_drawer, drawerItem);
             mDrawerList.Adapter = adapter;
             mDrawerList.ItemClick += MDrawerList_ItemClick;
 
             toolbar = (Toolbar)FindViewById(Resource.Id.toolbar);
             SetSupportActionBar(toolbar);
             drawerLayout = (DrawerLayout)FindViewById(Resource.Id.drawer_layout);
-            ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, Resource.String.navigation_drawer_open, Resource.String.navigation_drawer_close);
+            ActionBarDrawerToggle toggle = new(this, drawerLayout, toolbar, Resource.String.navigation_drawer_open, Resource.String.navigation_drawer_close);
             drawerLayout.AddDrawerListener(toggle);
             toggle.DrawerIndicatorEnabled = true;
             toggle.SyncState();            
@@ -400,7 +415,7 @@ namespace LocalNotifications
             if (e.Position == 0) 
             {
                 InitSetupLayout();
-                initSavedData();
+                InitSavedData();
             } 
             else if (e.Position == 1) 
             {
@@ -413,7 +428,7 @@ namespace LocalNotifications
             }
         }
 
-        void CreateNotificationChannel()
+        private void CreateNotificationChannel()
         {
             var permissionStatus = CheckSelfPermission(Manifest.Permission.PostNotifications);
             if (permissionStatus != Android.Content.PM.Permission.Granted)
@@ -430,32 +445,6 @@ namespace LocalNotifications
             }
         }
     }
-    public class WifiScanReceiver : BroadcastReceiver
-    {
-        private readonly WifiManager mWifiManager;
 
-        public WifiScanReceiver(WifiManager wifiManager)
-        {
-            mWifiManager = wifiManager;
-        }
-
-        public override void OnReceive(Context context, Android.Content.Intent intent)
-        {
-            if (intent.Action.Equals(WifiManager.ScanResultsAvailableAction))
-            {
-                IList<ScanResult> mScanResults = mWifiManager.ScanResults;
-                Dictionary<string, Tuple<string, bool>> wifiListTemp = new Dictionary<String, Tuple<String, bool>>();
-                foreach (ScanResult result in mScanResults)
-                {
-                    if (!MainActivity.wifiList.ContainsKey(result.Bssid) && !(result.Ssid.Length == 0))
-                    {
-                        wifiListTemp.Add(result.Bssid, Tuple.Create(result.Ssid, false));
-                    }
-                }
-                WifiInfo info = MainActivity.wifiManager.ConnectionInfo;
-                MainActivity.currentBSSID = info.BSSID;
-                wifiListTemp.ToList().ForEach(wifi => { MainActivity.wifiList.Add(wifi.Key, wifi.Value); });
-            }
-        }
-    }
+   
 }
