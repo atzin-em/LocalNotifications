@@ -20,7 +20,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Android.Net.Wifi;
 using Android.Views.InputMethods;
-using Android.Media;
+using Java.Lang;
 
 namespace LocalNotifications
 {
@@ -106,15 +106,20 @@ namespace LocalNotifications
 
             displayFrame = FindViewById<FrameLayout>(Resource.Id.content_frame);
             CreateNotificationChannel();
-            SetupSideDrawer();
-            mDrawerList.SetItemChecked(0, true);
-            InitSetupLayout();
-            initSavedData();
 
             var intent = new Android.Content.Intent(this, typeof(ServiceController));
             StartService(intent);
             responseNotifications.ItemDeleted += ResponseNotifications_ItemDeleted;
             responseNotifications.ItemChanged += ResponseNotifications_ItemChanged;
+        }
+
+        protected override void OnPostCreate(Bundle savedInstanceState)
+        {
+            base.OnPostCreate(savedInstanceState);
+            SetupSideDrawer();
+            mDrawerList.SetItemChecked(0, true);
+            InitSetupLayout();
+            initSavedData();
         }
 
         private void ResponseNotifications_ItemChanged()
