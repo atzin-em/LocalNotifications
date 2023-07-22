@@ -91,7 +91,7 @@ namespace LocalNotifications
                     }
 
                 }
-                return null;
+                return new ResponseNotifications();
             } 
         }
 
