@@ -27,9 +27,6 @@ namespace LocalNotifications
     [Activity(Label = "@string/app_name", Theme = "@style/AppTheme.NoActionBar", MainLauncher = true, ScreenOrientation = Android.Content.PM.ScreenOrientation.Portrait, WindowSoftInputMode = Android.Views.SoftInput.StateAlwaysHidden)]
     public class MainActivity : AppCompatActivity
     {
-        //private static readonly string CHANNEL_ID = "LocNetNot";
-        //public static MainActivity thisObject;
-        //public static NotificationManager notificationManager;
         public static ApiController apiController;
 
         private ListView mDrawerList;
@@ -414,24 +411,6 @@ namespace LocalNotifications
             }
         }
 
-        public static void CreateNotification(string Title, string Message)
-        {
-            // Instantiate the builder and set notification elements, including
-            // the pending intent:
-            //NotificationCompat.Builder builder = new NotificationCompat.Builder(MainActivity.thisObject, CHANNEL_ID)
-            //    .SetContentTitle(Title)
-            //    .SetContentText(Message)
-            //    .SetSmallIcon(Resource.Drawable.ic_notification_alert);
-
-            //// Build the notification:
-            //Notification notification = builder.Build();
-            
-
-            //// Publish the notification:
-            //const int notificationId = 0;
-            //notificationManager.Notify(notificationId, notification);
-        }
-
         void CreateNotificationChannel()
         {
             var permissionStatus = CheckSelfPermission(Manifest.Permission.PostNotifications);
@@ -447,18 +426,7 @@ namespace LocalNotifications
                 // channel on older versions of Android.
                 return;
             }
-
-            //var name = Resources.GetString(Resource.String.channel_name);
-            //var description = GetString(Resource.String.channel_description);
-            //var channel = new NotificationChannel(CHANNEL_ID, name, NotificationImportance.Default)
-            //{
-            //    Description = description
-            //};
-
-            //var notificationManager = (NotificationManager)GetSystemService(NotificationService);
-            //notificationManager.CreateNotificationChannel(channel);
         }
-
     }
     public class WifiScanReceiver : BroadcastReceiver
     {
@@ -485,7 +453,6 @@ namespace LocalNotifications
                 WifiInfo info = MainActivity.wifiManager.ConnectionInfo;
                 MainActivity.currentBSSID = info.BSSID;
                 wifiListTemp.ToList().ForEach(wifi => { MainActivity.wifiList.Add(wifi.Key, wifi.Value); });
-                //MainActivity.wifiList.Append(wifiListTemp);
             }
         }
     }
