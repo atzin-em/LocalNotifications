@@ -37,7 +37,6 @@ namespace LocalNotifications
         private static TextView textviewLog;
         private static readonly List<Tuple<DateTime, string>> logList = new();
         
-        private Button buttonScanNetworks;
         private Button buttonSelectNetworks;
         private PopupWindow popupWindow;
         public static WifiManager wifiManager;
@@ -192,8 +191,6 @@ namespace LocalNotifications
 
             buttonSelectNetworks = FindViewById<Button>(Resource.Id.buttonSelectNetworks);
             buttonSelectNetworks.Click += ButtonSelectNetworks_Click;
-            buttonScanNetworks = FindViewById<Button>(Resource.Id.buttonNetScan);
-            buttonScanNetworks.Click += ButtonScanNetworks_Click;
 
             inputTextApi = FindViewById<EditText>(Resource.Id.inputTextApi);
             buttonSubmitApi = FindViewById<Button>(Resource.Id.buttonSubmitApi);
