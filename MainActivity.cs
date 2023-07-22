@@ -102,8 +102,6 @@ namespace LocalNotifications
             Init(this, savedInstanceState);
             GetWifi();
             SetContentView(Resource.Layout.content_main);
-
-            //notificationManager = GetSystemService(NotificationService) as NotificationManager;
             apiController = new ApiController();
 
             displayFrame = FindViewById<FrameLayout>(Resource.Id.content_frame);
@@ -115,7 +113,6 @@ namespace LocalNotifications
 
             var intent = new Android.Content.Intent(this, typeof(ServiceController));
             StartService(intent);
-            //thisObject = this;
             responseNotifications.ItemDeleted += ResponseNotifications_ItemDeleted;
             responseNotifications.ItemChanged += ResponseNotifications_ItemChanged;
         }
