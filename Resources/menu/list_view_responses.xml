@@ -5,17 +5,16 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp">
-
- 
-
+  
     <LinearLayout
      android:layout_width="match_parent"
      android:layout_height="wrap_content"
      android:orientation="horizontal">
 
       <LinearLayout
-          android:layout_width="match_parent"
+          android:layout_width="wrap_content"
           android:layout_height="wrap_content"
+          android:layout_weight="1"
           android:orientation="vertical">
 
         <TextView
@@ -42,9 +41,9 @@
           android:id="@+id/deleteButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight="0"
             style="@style/Widget.App.Button.OutlinedButton.IconOnly"
             app:icon="@drawable/ic_close"
-            android:layout_weight="0"
             android:gravity="end"/>
 
     </LinearLayout>
@@ -66,6 +65,7 @@
             app:iconGravity="textStart"
             android:text="Does not repeat"
             android:layout_weight="0"
+            android:minWidth="210dp"
             android:gravity="start|center_vertical"/>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -80,6 +80,10 @@
               android:id="@+id/displaynameInput"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
+              android:singleLine="true"
+              android:imeActionLabel="Done"
+              android:imeOptions="actionDone"
+              android:text=""
               style="@style/Widget.MaterialComponents.TextInputEditText.OutlinedBox"/>
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -96,6 +100,10 @@
               android:id="@+id/notif_titleInput"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
+              android:singleLine="true"
+              android:imeActionLabel="Done"
+              android:imeOptions="actionDone"
+              android:text=""
               style="@style/Widget.MaterialComponents.TextInputEditText.OutlinedBox"/>
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -112,6 +120,10 @@
               android:id="@+id/notif_messageInput"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
+              android:singleLine="true"
+              android:imeActionLabel="Done"
+              android:imeOptions="actionDone"
+              android:text=""
               style="@style/Widget.MaterialComponents.TextInputEditText.OutlinedBox"/>
 
         </com.google.android.material.textfield.TextInputLayout>

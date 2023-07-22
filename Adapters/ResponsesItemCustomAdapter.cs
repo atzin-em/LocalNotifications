@@ -1,8 +1,26 @@
-﻿using Android.Content;
+﻿using Android.App;
+using Android.Content;
+using Android.Graphics.Drawables;
+using Android.OS;
+using Android.Runtime;
 using Android.Views;
 using Android.Widget;
+using AndroidX.Core.Content;
 using System;
 using System.Collections.Generic;
+using System.Dynamic;
+using System.Linq;
+using Android.Util;
+using System.Text;
+using static Android.Views.View;
+using Xamarin.Essentials;
+using Google.Android.Material.TextField;
+using Android.Views.InputMethods;
+using Google.Android.Material.Internal;
+using Android.Text;
+using TextInputEditText = Google.Android.Material.TextField.TextInputEditText;
+using Android.Support.Design.Widget;
+using static Android.Icu.Text.Transliterator;
 
 namespace LocalNotifications.Resources
 {
@@ -49,26 +67,54 @@ namespace LocalNotifications.Resources
             TextView titleTextView = view.FindViewById<TextView>(Resource.Id.titleTextView);
             TextView subtitleLabel = view.FindViewById<TextView>(Resource.Id.subtitleLabel);
 
+            TextInputEditText displaynameInput = view.FindViewById<TextInputEditText>(Resource.Id.displaynameInput);
+            TextInputEditText notif_titleInput = view.FindViewById<TextInputEditText>(Resource.Id.notif_titleInput);
+            TextInputEditText notif_messageInput = view.FindViewById<TextInputEditText>(Resource.Id.notif_messageInput);
+
             itemIndex = position;
+
             titleTextView.Text = responseItems[position].DisplayName;
             subtitleLabel.Text = responseItems[position].Uid;
+            displaynameInput.Text = responseItems[position].DisplayName;
+            notif_titleInput.Text = responseItems[position].NotificationTitle;
+            notif_messageInput.Text = responseItems[position].NotificationMessage;
 
             Button deleteButton = view.FindViewById<Button>(Resource.Id.deleteButton);
             LinearLayout layoutParent = view.FindViewById<LinearLayout>(Resource.Id.contentLayout);
 
+            displaynameInput.EditorAction += (sender, args) => {
+                TextInputEditText senderObject = (TextInputEditText)sender;
+                GetInputFields(view, position, senderObject);
+            };
 
-
-            if (view.HasOnClickListeners == false)
+            notif_titleInput.EditorAction += (sender, args) =>
             {
+                TextInputEditText senderObject = (TextInputEditText)sender;
+                GetInputFields(view, position, senderObject);
+            };
+
+            notif_messageInput.EditorAction += (sender, args) =>
+            {
+                TextInputEditText senderObject = (TextInputEditText)sender;
+                GetInputFields(view, position, senderObject);
+            };
+
+
+            if (view.HasOnClickListeners == false) {
                 view.Click += (sender, e) =>
                 {
                     layoutParent.Visibility = layoutParent.Visibility == ViewStates.Gone ? ViewStates.Visible : ViewStates.Gone;
-                };
+                };               
             }
 
             deleteButton.Click += (sender, e) =>
             {
-                ResponseNotification temp = responseItems.Find(x => x.Uid == ((TextView)((LinearLayout)((Button)sender).Parent).GetChildAt(0)).Text);
+                Button deleteButton = (Button)sender;
+                LinearLayout parentLayout = (LinearLayout)deleteButton.Parent;
+                LinearLayout titleLayout = (LinearLayout)parentLayout.GetChildAt(0);
+                TextView titleTextView = (TextView)titleLayout.GetChildAt(0);
+
+                ResponseNotification temp = responseItems.Find(x => x.Id == titleTextView.Text || x.DisplayName == titleTextView.Text);
                 if (temp != null)
                 {
                     int itemPosition = responseItems.IndexOf(temp);
@@ -82,28 +128,43 @@ namespace LocalNotifications.Resources
             buttonNotificationRepeat.Tag = responseItems[position].NotifyInterval.ToString();
             if (buttonNotificationRepeat.HasOnClickListeners == false)
             {
-                buttonNotificationRepeat.Click += (sender, e) =>
-                {
+                buttonNotificationRepeat.Click += (sender, e) => {
                     ShowRepeatPopup((Google.Android.Material.Button.MaterialButton)sender, e, responseItems[position], position);
                 };
             }
-
-            EditText displaynameInput = view.FindViewById<EditText>(Resource.Id.displaynameInput);
-            EditText notif_titleInput = view.FindViewById<EditText>(Resource.Id.notif_titleInput);
-            EditText notif_messageInput = view.FindViewById<EditText>(Resource.Id.notif_messageInput);
-
-
             return view;
+        }
+
+        private void GetInputFields(View view, int position, TextInputEditText sender)
+        {
+            TextInputEditText displaynameInput = view.FindViewById<TextInputEditText>(Resource.Id.displaynameInput);
+            TextInputEditText notif_titleInput = view.FindViewById<TextInputEditText>(Resource.Id.notif_titleInput);
+            TextInputEditText notif_messageInput = view.FindViewById<TextInputEditText>(Resource.Id.notif_messageInput);
+            if (displaynameInput.Text != "")
+            {
+                responseItems[position].SetFields(displaynameInput.Text, notif_titleInput.Text, notif_messageInput.Text);
+                //responseItems[position].SetDisplayName(displaynameInput.Text);
+            }
+            else
+            {
+                responseItems[position].SetFields(responseItems[position].Id, notif_titleInput.Text, notif_messageInput.Text);
+                //responseItems[position].SetDisplayName(responseItems[position].Id);
+            }
+            sender.ClearFocus();
+            MainActivity.DismissKeyboard(view);
         }
 
         private void ShowRepeatPopup(Google.Android.Material.Button.MaterialButton sender, EventArgs e, ResponseNotification response, int position)
         {
-
             LayoutInflater inflater = (LayoutInflater)context.GetSystemService(Context.LayoutInflaterService);
             View popupView = inflater.Inflate(Resource.Menu.popup_menu_repeat, null);
 
-            popupWindow = new PopupWindow(popupView, ViewGroup.LayoutParams.WrapContent, ViewGroup.LayoutParams.WrapContent, true);
-            popupWindow.ShowAsDropDown((View)sender);
+            int anchorWidth = sender.MeasuredWidth;
+            int anchorHeight = sender.MeasuredHeight;
+            int dpi = (int)DeviceDisplay.MainDisplayInfo.Density;
+
+            popupWindow = new PopupWindow(popupView, anchorWidth + (dpi * 5), anchorHeight * 6 , true);
+            popupWindow.ShowAsDropDown(sender, -(dpi * 5 / 2), 0, GravityFlags.Left);
 
             Button btnNoRepeat = popupView.FindViewById<Button>(Resource.Id.btnNoRepeat);
             Button btnEvery5Min = popupView.FindViewById<Button>(Resource.Id.btnEvery5Min);
@@ -147,7 +208,6 @@ namespace LocalNotifications.Resources
                 if (repeatButton.Tag == senderButton.Tag)
                 {
                     iconDrawable = Resource.Drawable.btn_radio_on_dark;
-                    //buttonNotificationRepeat.Text = repeatButton.Text;
                     senderParent.Text = repeatButton.Text;
                     senderParent.Tag = repeatButton.Tag;
                     RepeatInterval repeatInterval = (RepeatInterval)Enum.Parse(typeof(RepeatInterval), repeatButton.Tag.ToString());

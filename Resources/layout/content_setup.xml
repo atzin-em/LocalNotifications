@@ -58,6 +58,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:singleLine="true"
             android:inputType="text"/>
         <Button
             android:id="@+id/buttonSubmitApi"
@@ -78,14 +79,16 @@
             android:inputType="text"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            android:singleLine="true"/>
         <EditText
             android:id="@+id/inputTextApiKey"
             android:hint="Secret"
             android:inputType="textPassword"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            android:singleLine="true"/>
 
         <Button
             android:id="@+id/buttonSubmitApiKey"
@@ -106,7 +109,8 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:inputType="text"/>
+            android:inputType="text"
+            android:singleLine="true"/>
 
         <EditText
             android:id="@+id/inputTextValue"
@@ -114,7 +118,8 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:inputType="text"/>
+            android:inputType="text"
+            android:singleLine="true"/>
 
         <Button
             android:id="@+id/buttonSubmitKeyVal"

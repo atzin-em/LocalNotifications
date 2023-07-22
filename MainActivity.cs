@@ -1,33 +1,35 @@
-﻿using Android;
+﻿using System;
 using Android.App;
-using Android.Content;
-using Android.Net.Wifi;
 using Android.OS;
-using Android.Views;
-using Android.Widget;
 using AndroidX.AppCompat.App;
-using AndroidX.Core.App;
-using AndroidX.Core.View;
-using AndroidX.DrawerLayout.Widget;
+using Android.Widget;
 using LocalNotifications.Resources;
+using static Xamarin.Essentials.Platform;
+using Android.Content;
+using Android;
 using Newtonsoft.Json;
-using System;
+using AndroidX.DrawerLayout.Widget;
+using AndroidX.Core.App;
+using Toolbar = AndroidX.AppCompat.Widget.Toolbar;
+using AndroidX.Core.View;
+using Android.Views;
+using String = System.String;
+using Xamarin.Essentials;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Xamarin.Essentials;
-using static Xamarin.Essentials.Platform;
-using String = System.String;
-using Toolbar = AndroidX.AppCompat.Widget.Toolbar;
+using Android.Net.Wifi;
+using Android.Views.InputMethods;
+using Android.Media;
 
 namespace LocalNotifications
 {
-    [Activity(Label = "@string/app_name", Theme = "@style/AppTheme.NoActionBar", MainLauncher = true)]
+    [Activity(Label = "@string/app_name", Theme = "@style/AppTheme.NoActionBar", MainLauncher = true, ScreenOrientation = Android.Content.PM.ScreenOrientation.Portrait, WindowSoftInputMode = Android.Views.SoftInput.StateAlwaysHidden)]
     public class MainActivity : AppCompatActivity
     {
-        private static readonly string CHANNEL_ID = "LocNetNot";
-        public static MainActivity thisObject;
-        public static NotificationManager notificationManager;
+        //private static readonly string CHANNEL_ID = "LocNetNot";
+        //public static MainActivity thisObject;
+        //public static NotificationManager notificationManager;
         public static ApiController apiController;
 
         private ListView mDrawerList;
@@ -39,40 +41,36 @@ namespace LocalNotifications
         private Button buttonGet;
         private static TextView textviewLog;
         private static List<Tuple<DateTime, string>> logList = new List<Tuple<DateTime, string>>();
-
+        
         private Button buttonScanNetworks;
         private Button buttonSelectNetworks;
         private PopupWindow popupWindow;
         public static WifiManager wifiManager;
-        public static bool validConnection
-        {
-            get
+        public static bool validConnection { 
+            get 
             {
                 if (wifiList != null && currentBSSID != null)
                 {
                     if (wifiList.ContainsKey(currentBSSID))
                     {
                         return wifiList[currentBSSID].Item2;
-                    }
-                    else
+                    } else
                     {
                         return false;
                     }
-                }
-                else
+                } else
                 {
                     return false;
                 }
-
-            }
+                
+            } 
         }
         public static string currentBSSID = "";
         private ListView listviewNetworks;
         private static Dictionary<string, Tuple<string, bool>> _wifiList = new Dictionary<string, Tuple<string, bool>>();
-        public static Dictionary<string, Tuple<string, bool>> wifiList
-        {
+        public static Dictionary<string, Tuple<string, bool>> wifiList { 
             get { return _wifiList; }
-            set { _wifiList = value; }
+            set { _wifiList = value; } 
         }
 
         private EditText inputTextApi;
@@ -84,9 +82,8 @@ namespace LocalNotifications
         private EditText inputTextValue;
         private Button buttonSubmitKeyVal;
         private static ListView listViewResponses;
-        public static ResponseNotifications responseNotifications
-        {
-            get
+        public static ResponseNotifications responseNotifications { 
+            get 
             {
                 if (listViewResponses != null)
                 {
@@ -97,9 +94,8 @@ namespace LocalNotifications
                     }
 
                 }
-                return new ResponseNotifications();
-                //return null;
-            }
+                return null;
+            } 
         }
 
         protected override void OnCreate(Bundle savedInstanceState)
@@ -110,7 +106,7 @@ namespace LocalNotifications
             GetWifi();
             SetContentView(Resource.Layout.content_main);
 
-            notificationManager = GetSystemService(NotificationService) as NotificationManager;
+            //notificationManager = GetSystemService(NotificationService) as NotificationManager;
             apiController = new ApiController();
 
             displayFrame = FindViewById<FrameLayout>(Resource.Id.content_frame);
@@ -169,17 +165,16 @@ namespace LocalNotifications
             {
                 wifiList = JsonConvert.DeserializeObject<Dictionary<string, Tuple<string, bool>>>(wifiData);
             }
-
+            
             string notificationData = GetSetupData("ResponseNotifications").Result;
             List<RootResponseNotification> rootResponseNotification;
             if (notificationData != null)
             {
                 rootResponseNotification = JsonConvert.DeserializeObject<List<RootResponseNotification>>(notificationData);
                 List<ResponseNotification> resp = rootResponseNotification.Select(x => new ResponseNotification().ConsumeRoot(x)).ToList();
-                //responseNotifications.SetList(resp);
                 listViewResponses.Adapter = new ResponsesItemCustomAdapter(this, new ResponseNotifications(resp));
             }
-
+            
 
             if (inputTextApi.Length() > 0)
             {
@@ -221,6 +216,7 @@ namespace LocalNotifications
         private void ButtonScanNetworks_Click(object sender, EventArgs e)
         {
             WifiScan();
+            Toast.MakeText(this, "Scanning for WiFi Networks", ToastLength.Short).Show();
         }
 
         private void GetWifi()
@@ -257,7 +253,7 @@ namespace LocalNotifications
 
         private void Adapter_networksListChanged()
         {
-            Dictionary<string, Tuple<string, bool>> savedNetworks = ((NetworksItemCustomAdapter)listviewNetworks.Adapter).networksList.Where(x => x.Value.Item2 == true).ToDictionary(kv => kv.Key, kv => kv.Value);
+            Dictionary<string, Tuple<string,bool>> savedNetworks = ((NetworksItemCustomAdapter)listviewNetworks.Adapter).networksList.Where(x => x.Value.Item2 == true).ToDictionary(kv => kv.Key, kv => kv.Value);
             StoreSetupData("WifiList", JsonConvert.SerializeObject(savedNetworks));
         }
 
@@ -268,7 +264,7 @@ namespace LocalNotifications
                 ResponseNotifications dataStore = AddResponseNotification(inputTextKey.Text, inputTextValue.Text);
                 StoreSetupData("ResponseNotifications", JsonConvert.SerializeObject(dataStore.GetList()));
                 Toast.MakeText(this, "Added New Response Notification", ToastLength.Short).Show();
-            }
+            } 
             else
             {
                 Toast.MakeText(this, "Can't Add Empty Key/Val", ToastLength.Short).Show();
@@ -280,7 +276,7 @@ namespace LocalNotifications
             string apiKeyHeader = inputTextApiKeyHeader.Text;
             string apiKey = inputTextApiKey.Text;
             if (
-                ((apiController.KeyHeader.Length == 0 && inputTextApiKeyHeader.Length() == 0) ||
+                ((apiController.KeyHeader.Length == 0 && inputTextApiKeyHeader.Length() == 0) || 
                 (apiController.KeyHeader.Length > 0 && inputTextApiKeyHeader.Length() == 0)) && inputTextApiKey.Length() > 0)
             {
                 Toast.MakeText(this, "Can't Set Secret With No Header", ToastLength.Short).Show();
@@ -290,7 +286,7 @@ namespace LocalNotifications
                 Toast.MakeText(this, "Can't Set Empty Header", ToastLength.Short).Show();
             }
             else if (
-                (inputTextApiKeyHeader.Length() > 0 && inputTextApiKey.Length() > 0) ||
+                (inputTextApiKeyHeader.Length() > 0 && inputTextApiKey.Length() > 0) || 
                 (inputTextApiKeyHeader.Length() == 0 && apiController.KeyHeader.Length > 0) ||
                 (inputTextApiKey.Length() == 0 && apiController.Key == "SET"))
             {
@@ -299,7 +295,7 @@ namespace LocalNotifications
                 apiController.Key = apiKey;
                 apiController.KeyHeader = apiKeyHeader;
                 Toast.MakeText(this, (apiKey.Length > 0 ? "Set Api Secret" : "Unset Api Secret"), ToastLength.Short).Show();
-            }
+            } 
             else
             {
                 Toast.MakeText(this, "Can't Set Empty Secret And Header", ToastLength.Short).Show();
@@ -311,8 +307,7 @@ namespace LocalNotifications
             if (apiController.Api.Length == 0 && inputTextApi.Length() == 0)
             {
                 Toast.MakeText(this, "Api Url Cannot Be Empty", ToastLength.Short).Show();
-            }
-            else
+            } else
             {
                 string apiUrl = inputTextApi.Text.Trim();
                 if (!apiUrl.Contains("http://"))
@@ -352,6 +347,21 @@ namespace LocalNotifications
             LogDebug(response);
         }
 
+        public static void DismissKeyboard(View view)
+        {
+            if (view != null)
+            {
+                var imm = (InputMethodManager)CurrentActivity.GetSystemService(InputMethodService);
+                imm.HideSoftInputFromWindow(view.WindowToken, 0);
+            }
+            var currentFocus = CurrentActivity.CurrentFocus;
+            if (currentFocus != null)
+            {
+                InputMethodManager inputMethodManager = (InputMethodManager)CurrentActivity.GetSystemService(Context.InputMethodService);
+                inputMethodManager.HideSoftInputFromWindow(currentFocus.WindowToken, HideSoftInputFlags.None);
+            }
+        }
+
         public static void LogDebug(string message)
         {
             logList.Add(Tuple.Create(DateTime.Now, message));
@@ -382,19 +392,18 @@ namespace LocalNotifications
             ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, Resource.String.navigation_drawer_open, Resource.String.navigation_drawer_close);
             drawerLayout.AddDrawerListener(toggle);
             toggle.DrawerIndicatorEnabled = true;
-            toggle.SyncState();
-
+            toggle.SyncState();            
         }
 
         private void MDrawerList_ItemClick(object sender, AdapterView.ItemClickEventArgs e)
         {
             View content_view = null;
-            if (e.Position == 0)
+            if (e.Position == 0) 
             {
                 InitSetupLayout();
                 initSavedData();
-            }
-            else if (e.Position == 1)
+            } 
+            else if (e.Position == 1) 
             {
                 InitDebugLayout();
             }
@@ -409,18 +418,18 @@ namespace LocalNotifications
         {
             // Instantiate the builder and set notification elements, including
             // the pending intent:
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(MainActivity.thisObject, CHANNEL_ID)
-                .SetContentTitle(Title)
-                .SetContentText(Message)
-                .SetSmallIcon(Resource.Drawable.ic_notification_alert);
+            //NotificationCompat.Builder builder = new NotificationCompat.Builder(MainActivity.thisObject, CHANNEL_ID)
+            //    .SetContentTitle(Title)
+            //    .SetContentText(Message)
+            //    .SetSmallIcon(Resource.Drawable.ic_notification_alert);
 
-            // Build the notification:
-            Notification notification = builder.Build();
+            //// Build the notification:
+            //Notification notification = builder.Build();
+            
 
-
-            // Publish the notification:
-            const int notificationId = 0;
-            notificationManager.Notify(notificationId, notification);
+            //// Publish the notification:
+            //const int notificationId = 0;
+            //notificationManager.Notify(notificationId, notification);
         }
 
         void CreateNotificationChannel()
@@ -439,15 +448,15 @@ namespace LocalNotifications
                 return;
             }
 
-            var name = Resources.GetString(Resource.String.channel_name);
-            var description = GetString(Resource.String.channel_description);
-            var channel = new NotificationChannel(CHANNEL_ID, name, NotificationImportance.Default)
-            {
-                Description = description
-            };
+            //var name = Resources.GetString(Resource.String.channel_name);
+            //var description = GetString(Resource.String.channel_description);
+            //var channel = new NotificationChannel(CHANNEL_ID, name, NotificationImportance.Default)
+            //{
+            //    Description = description
+            //};
 
-            var notificationManager = (NotificationManager)GetSystemService(NotificationService);
-            notificationManager.CreateNotificationChannel(channel);
+            //var notificationManager = (NotificationManager)GetSystemService(NotificationService);
+            //notificationManager.CreateNotificationChannel(channel);
         }
 
     }

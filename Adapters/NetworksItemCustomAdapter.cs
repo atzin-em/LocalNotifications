@@ -1,8 +1,16 @@
-﻿using Android.Views;
+﻿using Android.App;
+using Android.Content;
+using Android.Net;
+using Android.OS;
+using Android.Runtime;
+using Android.Views;
 using Android.Widget;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting.Contexts;
+using System.Text;
 using Context = Android.Content.Context;
 
 namespace LocalNotifications
@@ -24,7 +32,7 @@ namespace LocalNotifications
             this.context = mContext;
             this.layoutResourceId = layoutResourceId;
             this.networksList = data;
-
+            
         }
 
         public override int Count => networksList.Count;
@@ -69,7 +77,7 @@ namespace LocalNotifications
                     buttonNetworkSelect.Add(networkButton);
                 }
             }
-
+            
 
             if (networksList.Count <= 0)
             {
