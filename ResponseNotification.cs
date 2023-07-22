@@ -6,31 +6,43 @@ using System.Reflection;
 
 namespace LocalNotifications
 {
+    // Delegate for handling notifications
     public delegate void NotificationDelegate();
+
+    // List of custom ResponseNotification objects with additional events
     public class ResponseNotifications : List<ResponseNotification>
     {
+        // Events for when an item is deleted or changed
         public event NotificationDelegate ItemDeleted;
         public event NotificationDelegate ItemChanged;
 
         protected virtual void OnItemChanged()
         {
-            ItemChanged.Invoke();
-        }
-        protected virtual void OnItemDeleted()
-        {
-            ItemDeleted.Invoke();
+            ItemChanged?.Invoke();
         }
 
+        protected virtual void OnItemDeleted()
+        {
+            ItemDeleted?.Invoke();
+        }
+
+        // Overridden RemoveAt method with event handling for item deletion
         public new void RemoveAt(int index)
         {
             base.RemoveAt(index);
             OnItemDeleted();
         }
 
+        // Custom constructor for ResponseNotifications class
         public ResponseNotifications() { }
+
+        // Custom constructor that sets the base list with provided data
         public ResponseNotifications(List<ResponseNotification> baseList) { SetList(baseList); }
+
+        // Overridden Add method with event handling for item addition
         public new void Add(string Key, string Val)
         {
+            // Check for duplicate entries and adjust Uid if needed
             ResponseNotification tempResponse = dupeCheck(Key, Val);
             if (tempResponse != null)
             {
@@ -39,6 +51,7 @@ namespace LocalNotifications
             base.Add(tempResponse);
         }
 
+        // Serialize the list to a List<object> format
         public List<object> GetList()
         {
             List<object> list = new List<object>();
@@ -49,6 +62,7 @@ namespace LocalNotifications
             return list;
         }
 
+        // Helper class to wrap DateTime values for notifications
         public class TimeWrapper
         {
             private DateTime dateTime;
@@ -57,6 +71,7 @@ namespace LocalNotifications
             {
                 this.dateTime = dateTime;
             }
+
             public TimeWrapper()
             {
                 this.dateTime = DateTime.MinValue;
@@ -80,6 +95,7 @@ namespace LocalNotifications
             }
         }
 
+        // Group notifications based on their RepeatInterval property
         public Dictionary<RepeatInterval, Tuple<List<ResponseNotification>, TimeWrapper>> GroupByInterval()
         {
             Dictionary<RepeatInterval, Tuple<List<ResponseNotification>, TimeWrapper>> notificationDictionary = new Dictionary<RepeatInterval, Tuple<List<ResponseNotification>, TimeWrapper>>();
@@ -98,6 +114,7 @@ namespace LocalNotifications
             return notificationDictionary;
         }
 
+        // Clear the list and set it with the provided data
         public void SetList(List<ResponseNotification> inList)
         {
             base.Clear();
@@ -108,23 +125,26 @@ namespace LocalNotifications
             }
         }
 
+        // Event handler for property changes in ResponseNotification objects
         private void NotificationResponse_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             OnItemChanged();
         }
 
+        // Check for duplicate entries and adjust Uid if needed
         private ResponseNotification dupeCheck(string Key, string Val)
         {
             ResponseNotification responseNotification = new ResponseNotification(Key, Val);
             if (this.Exists(x => x.Id == responseNotification.Id))
             {
-                int dupeCount = this.Where(x => x.Id == responseNotification.Id).Count();
+                int dupeCount = this.Count(x => x.Id == responseNotification.Id);
                 responseNotification.SetUid(responseNotification.Id + $" ({dupeCount})");
             }
             return responseNotification;
         }
     }
 
+    // Enumeration for repeat intervals of notifications
     public enum RepeatInterval
     {
         NoRepeat = 0,
@@ -133,6 +153,8 @@ namespace LocalNotifications
         Every30Min = 30,
         Every1Hr = 60
     }
+
+    // Base class for notification data
     public class RootResponseNotification
     {
         public string Key { get; set; }
@@ -145,21 +167,25 @@ namespace LocalNotifications
         public string NotificationMessage { get; set; } = "";
     }
 
+    // Custom ResponseNotification class inheriting from RootResponseNotification
     public class ResponseNotification : RootResponseNotification
     {
         private string _Key;
         private string _Val;
 
+        // Overridden Key and Val properties with private backing fields
         public new string Key
         {
             get { return _Key; }
         }
+
         public new string Val
         {
             get { return _Val; }
         }
 
         private string _Id;
+        // Overridden Id property with custom logic for setting the value
         public new string Id
         {
             get { return _Id; }
@@ -178,13 +204,13 @@ namespace LocalNotifications
 
         private string _Uid = null;
 
+        // Overridden Uid property with custom logic for setting the value
         public new string Uid
         {
             get
             {
                 if (_Uid == null)
                 {
-                    //_Uid = Id; // Not sure if necessary
                     return Id;
                 }
                 else
@@ -196,13 +222,14 @@ namespace LocalNotifications
 
         private string _DisplayName = null;
 
+        // Overridden DisplayName property with custom logic for setting the value
         public new string DisplayName
         {
             get
             {
                 if (_DisplayName == null)
                 {
-                    return Uid;
+                    return Id;
                 }
                 else
                 {
@@ -211,50 +238,41 @@ namespace LocalNotifications
             }
         }
 
+        // Calculate the repeat interval in milliseconds for the notification
         public int RepeatMs
         {
             get { return (int)this.NotifyInterval * 60 * 1000; }
         }
 
+        // Event handler for property changes in ResponseNotification objects
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual void OnPropertyChanged(string propertyName)
         {
-            PropertyChanged.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
+        // Get the display string for the RepeatInterval property
         public string GetIntervalDisplay()
         {
-            if (this.NotifyInterval == RepeatInterval.NoRepeat)
+            switch (this.NotifyInterval)
             {
-                return "Does not repeat";
-            }
-            else
-            if (this.NotifyInterval == RepeatInterval.Every5Min)
-            {
-                return "Every 5 Minutes";
-            }
-            else
-            if (this.NotifyInterval == RepeatInterval.Every15Min)
-            {
-                return "Every 15 Minutes";
-            }
-            else
-            if (this.NotifyInterval == RepeatInterval.Every30Min)
-            {
-                return "Every 30 Minutes";
-            }
-            else
-            if (this.NotifyInterval == RepeatInterval.Every1Hr)
-            {
-                return "Every Hour";
-            }
-            else
-            {
-                return "ERROR";
+                case RepeatInterval.NoRepeat:
+                    return "Does not repeat";
+                case RepeatInterval.Every5Min:
+                    return "Every 5 Minutes";
+                case RepeatInterval.Every15Min:
+                    return "Every 15 Minutes";
+                case RepeatInterval.Every30Min:
+                    return "Every 30 Minutes";
+                case RepeatInterval.Every1Hr:
+                    return "Every Hour";
+                default:
+                    return "ERROR";
             }
         }
 
+        // Consume data from the base class and set properties in the derived class
         public ResponseNotification ConsumeRoot(RootResponseNotification root)
         {
             Type parentType = typeof(RootResponseNotification);
@@ -287,12 +305,16 @@ namespace LocalNotifications
             return this;
         }
 
+        // Serialize the ResponseNotification object to the base class format
         public RootResponseNotification Serialize()
         {
             return this;
         }
 
+        // Default constructor
         public ResponseNotification() { }
+
+        // Constructor with Key and Val parameters
         public ResponseNotification(string Key, string Val)
         {
             this._Key = Key;
@@ -300,30 +322,52 @@ namespace LocalNotifications
             this.Id = $"{Key.Trim()} : {Val}";
         }
 
+        // Set the NotifyInterval property and trigger property changed event
         public void SetInterval(RepeatInterval interval)
         {
             this.NotifyInterval = interval;
             OnPropertyChanged(nameof(NotifyInterval));
         }
 
-        public void SetDisplayName(string Name)
+        public void SetFields(string displayName = "", string notificationTitle = "", string notificationMessage = "")
+        {
+            if (displayName != "")
+            {
+                SetDisplayName(displayName);
+            }
+            if (notificationTitle != "")
+            {
+                SetNotificationTitle(notificationTitle);
+            }
+            if (notificationMessage != "")
+            {
+                SetNotificationMessage(notificationMessage);
+            }
+            OnPropertyChanged("NotifyFields");
+        }
+
+        // Set the DisplayName property and trigger property changed event
+        private void SetDisplayName(string Name)
         {
             this._DisplayName = Name;
-            OnPropertyChanged(nameof(DisplayName));
+            //OnPropertyChanged(nameof(DisplayName));
         }
 
-        public void SetNotificationTitle(string Title)
+        // Set the NotificationTitle property and trigger property changed event
+        private void SetNotificationTitle(string Title)
         {
             this.NotificationTitle = Title;
-            OnPropertyChanged(nameof(NotificationTitle));
+            //OnPropertyChanged(nameof(NotificationTitle));
         }
 
-        public void SetNotificationMessage(string Message)
+        // Set the NotificationMessage property and trigger property changed event
+        private void SetNotificationMessage(string Message)
         {
             this.NotificationMessage = Message;
-            OnPropertyChanged(nameof(NotificationMessage));
+            //OnPropertyChanged(nameof(NotificationMessage));
         }
 
+        // Set the Uid property and trigger property changed event
         public void SetUid(string Uid)
         {
             this._Uid = Uid;
