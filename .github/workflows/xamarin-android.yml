@@ -1,30 +1,30 @@
+name: Xamarin Android Build
 
-name: Build Xamarin.Android app
-
-on: [push]
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   build:
+    name: Build Xamarin Android App
+    runs-on: windows-latest
 
-    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    steps:    
-    - name: Android CI/CD
-      # You may pin to the exact commit or the version.
-      # uses: henriquehorbovyi/Android-CI-CD@630b451bc0bea1e6fc44f138443487aa83d3675f
-      uses: henriquehorbovyi/Android-CI-CD@v0.0.1-beta5
-    #- uses: actions/checkout@v3
-    #- name: Set default Xamarin SDK versions
-    #  run: |
-    #    & $Env:VM_ASSETS\select-xamarin-sdk-v2.sh --mono=12.0 --android=13.0
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v1.0.1
 
-    - name: Setup .NET Core SDK 5.0.x
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: '6.0.x'
+      - name: Setup NuGet
+        uses: nuget/setup-nuget@v1.0.5
 
-    - name: Install dependencies
-      run: nuget restore 'LocalNotifications.sln'
+      - name: Restore NuGet packages
+        run: nuget restore LocalNotifications.sln
 
-    - name: Build
-      run: msbuild 'LocalNotifications.csproj' /t:PackageForAndroid /p:Configuration=Debug
+      - name: Build Xamarin Android project
+        run: msbuild /t:Restore,Build /p:Configuration=Release LocalNotifications.sln
