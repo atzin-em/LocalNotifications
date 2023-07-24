@@ -9,15 +9,16 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - name: Setup Xamarin
-      # You may pin to the exact commit or the version.
-      # uses: maxim-lobanov/setup-xamarin@00b44a3ef9e2d1953010956de2022e8d095a196c
-      uses: maxim-lobanov/setup-xamarin@v1
+    - name: Xamarin Android container build action
+  # You may pin to the exact commit or the version.
+  # uses: rheuvel89/xamarin-container-action@fbe83158557663596c88f7362d55516d394567a4
+      uses: rheuvel89/xamarin-container-action@v1.14.31
       with:
-        # Version of Mono to select
-        mono-version: 12.0
-        # Version of Xamarin.Android to select
-        xamarin-android-version: 13.0
+        # Path to the solution file, relative to repository root
+        SolutionPath: 'LocalNotifications.sln'
+        # Path to the Android project file, relative to repository root
+        ProjectPath: 'LocalNotifications.csproj'
+        # Configuration to build with
     
     - uses: actions/checkout@v3
     - name: Set default Xamarin SDK versions
