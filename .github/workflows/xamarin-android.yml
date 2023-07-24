@@ -6,7 +6,7 @@ on: [push]
 jobs:
   build:
 
-    runs-on: windowsos-latest
+    runs-on: windows-latest
 
     steps:
     - name: Setup Xamarin
