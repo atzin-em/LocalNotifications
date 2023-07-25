@@ -1,33 +1,29 @@
-name: Xamarin Android Build
+name: Build Xamarin Android App
 
 on:
   push:
     branches:
-      - main
-  pull_request:
-    branches:
-      - main
+      - main  # You can change this to the branch you want to trigger the build
 
 jobs:
   build:
-    name: Build Xamarin Android App
-    runs-on: windows-latest
+    runs-on: windows-latest  # You can use the latest version of Windows runner
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+    - name: Checkout repository
+      uses: actions/checkout@v2
 
-      - name: ACTIONS_ALLOW_UNSECURE_COMMANDS
-        run: echo 'ACTIONS_ALLOW_UNSECURE_COMMANDS=true' >> $GITHUB_ENV
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v1.0.0  # This sets up the MSBuild environment on the runner
 
-      - name: Setup MSBuild
-        uses: microsoft/setup-msbuild@v1.0.1
+    - name: Setup NuGet
+      uses: NuGet/setup-nuget@v1.0.5  # This sets up NuGet for package restoration
 
-      - name: Setup NuGet
-        uses: nuget/setup-nuget@v1.0.5
+    - name: Restore NuGet packages
+      run: nuget restore YourSolutionName.sln  # Replace "YourSolutionName.sln" with your actual solution file
 
-      - name: Restore NuGet packages
-        run: nuget restore LocalNotifications.sln
+    - name: Build Xamarin Android project
+      run: msbuild /p:Configuration=Release /t:Rebuild /p:Platform="Any CPU" LocalNotifications.sln  # Replace "YourSolutionName.sln" with your actual solution file
 
-      - name: Build Xamarin Android project
-        run: msbuild /t:Restore,Build /p:Configuration=Release LocalNotifications.sln
+    # Add additional steps here if you want to run tests or perform other tasks
+
