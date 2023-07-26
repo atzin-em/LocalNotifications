@@ -37,7 +37,9 @@ jobs:
     - name: Create Android SDK directory
       run: |
         # Create the Android SDK folder if it doesn't exist
-        mkdir -p ${{ env.ANDROID_HOME }}
+        if (!(Test-Path $env:ANDROID_HOME)) {
+          New-Item -ItemType Directory -Force -Path $env:ANDROID_HOME
+        }
 
     - name: Cache Android SDK
       id: cache-android
