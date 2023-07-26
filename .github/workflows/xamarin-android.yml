@@ -23,6 +23,13 @@ jobs:
         path: ~/.nuget/packages
         key: ${{ runner.os }}-xamarin-nuget-${{ hashFiles('**/*.sln') }}
         restore-keys: ${{ runner.os }}-xamarin-nuget-
+        
+    - name: Set up Xamarin Android environment
+      run: |
+        echo "MSBUILD_PATH=C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Current\Bin" >> $GITHUB_ENV
+        echo "ANDROID_SDK_ROOT=${{ env.ANDROID_HOME }}" >> $GITHUB_ENV
+      env:
+        ANDROID_SDK_ROOT: ${{ env.ANDROID_HOME }}
 
     - name: Cache Android SDK
       id: cache-android
@@ -51,15 +58,9 @@ jobs:
         ndk-version: '21.4.7075529'
         java-version: '11'
 
-    - name: Restore NuGet packages
+    - name: Install NuGet packages
+      if: steps.cache-nuget.outputs.cache-hit != 'true'
       run: nuget restore LocalNotifications.sln
-
-    - name: Set up Xamarin Android environment
-      run: |
-        echo "MSBUILD_PATH=C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Current\Bin" >> $GITHUB_ENV
-        echo "ANDROID_SDK_ROOT=${{ env.ANDROID_HOME }}" >> $GITHUB_ENV
-      env:
-        ANDROID_SDK_ROOT: ${{ env.ANDROID_HOME }}
 
     - name: Build Xamarin Android project
       run: msbuild /p:Configuration=Release /t:Rebuild /p:Platform="Any CPU" LocalNotifications.sln 
