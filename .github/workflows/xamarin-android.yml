@@ -45,22 +45,3 @@ jobs:
     - name: Build Xamarin Android project
       run: msbuild /p:Configuration=Release /t:Rebuild /p:Platform="Any CPU" LocalNotifications.sln 
 
-    - name: Extract App Version
-      run: |
-        version=$(grep -oP '(?<=AssemblyVersion\(")[^"]*' Path/To/Your/AssemblyInfo.cs)
-        echo "App Version: $version" >> version_output.txt
-      shell: bash  # Use the bash shell for regex support
-
-    - name: Upload Version Output
-      uses: actions/upload-artifact@v2
-      with:
-        name: version_output
-        path: version_output.txt
-        
-    - name: Latest Release Version
-      # You may pin to the exact commit or the version.
-      # uses: fangqiuming/latest-release-version@ced3ac31037d6933a46332d430919e62bb933dc0
-      uses: fangqiuming/latest-release-version@v1.2.0-beta
-      with:
-        include_pre: true
-
