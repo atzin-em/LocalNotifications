@@ -19,7 +19,7 @@ jobs:
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v1.3.1
       
-    - name: Set up Xamarin Android environment
+    - name: Set up Xamarin Android Environment
       run: |
         echo "MSBUILD_PATH=C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Current\Bin" >> $GITHUB_ENV
         echo "ANDROID_SDK_ROOT=${{ env.ANDROID_HOME }}" >> $GITHUB_ENV
@@ -34,13 +34,10 @@ jobs:
         key: ${{ runner.os }}-xamarin-nuget-${{ hashFiles('**/*.sln') }}
         restore-keys: ${{ runner.os }}-xamarin-nuget-
 
-    #- name: Cache JDK
-    #  id: cache-jdk
-    #  uses: actions/cache@v2
-    #  with:
-    #    path: ${{ env.JAVA_HOME }}
-    #    key: ${{ runner.os }}-xamarin-jdk-${{ hashFiles('**/*.sln') }}
-    #    restore-keys: ${{ runner.os }}-xamarin-jdk-
+    - name: Create Android SDK directory
+      run: |
+        # Create the Android SDK folder if it doesn't exist
+        mkdir -p ${{ env.ANDROID_HOME }}
 
     - name: Cache Android SDK
       id: cache-android
@@ -51,7 +48,6 @@ jobs:
         restore-keys: ${{ runner.os }}-xamarin-android-
 
     - name: Install JDK 11
-    #  if: steps.cache-jdk.outputs.cache-hit != 'true'  # Skip if cache is restored
       uses: actions/setup-java@v2
       with:
         java-version: '11'
@@ -78,13 +74,6 @@ jobs:
       with:
         path: ~/.nuget/packages
         key: ${{ runner.os }}-xamarin-nuget-${{ hashFiles('**/*.sln') }}
-
-    #- name: Save JDK to cache
-    #  if: success()  # Save the cache only if the build was successful
-    #  uses: actions/cache@v2
-    #  with:
-    #    path: ${{ env.JAVA_HOME }}
-    #    key: ${{ runner.os }}-xamarin-jdk-${{ hashFiles('**/*.sln') }}
 
     - name: Save Android SDK to cache
       if: success()  # Save the cache only if the build was successful
