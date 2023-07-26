@@ -251,6 +251,7 @@ namespace LocalNotifications
             LayoutInflater inflater = (LayoutInflater)GetSystemService(LayoutInflaterService);
             View popupView = inflater.Inflate(Resource.Menu.list_view_networks, null);
 
+            int dpi = (int)DeviceDisplay.MainDisplayInfo.Density;
             popupWindow = new PopupWindow(popupView, ViewGroup.LayoutParams.WrapContent, ViewGroup.LayoutParams.WrapContent, true);
 
             Button anchor = (Button)sender;
