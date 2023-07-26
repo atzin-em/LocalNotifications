@@ -33,15 +33,7 @@ jobs:
         path: ~/.nuget/packages
         key: ${{ runner.os }}-xamarin-nuget-${{ hashFiles('**/*.sln') }}
         restore-keys: ${{ runner.os }}-xamarin-nuget-
-        
-    - name: Cache Android SDK
-      id: cache-android
-      uses: actions/cache@v2
-      with:
-        path: ${{ env.ANDROID_SDK_ROOT }}
-        key: ${{ runner.os }}-xamarin-android-${{ hashFiles('**/*.sln') }}
-        restore-keys: ${{ runner.os }}-xamarin-android-
-
+  
     - name: Install JDK 11
       uses: actions/setup-java@v2
       with:
@@ -49,7 +41,6 @@ jobs:
         distribution: 'adopt'
 
     - name: Install Android SDK
-      if: steps.cache-android.outputs.cache-hit != 'true'  # Skip if cache is restored
       uses: android-actions/setup-android@v2
       with:
         sdk-platform: '30'
@@ -69,10 +60,3 @@ jobs:
       with:
         path: ~/.nuget/packages
         key: ${{ runner.os }}-xamarin-nuget-${{ hashFiles('**/*.sln') }}
-
-    - name: Save Android SDK to cache
-      if: success()  # Save the cache only if the build was successful
-      uses: actions/cache@v2
-      with:
-        path: ${{ env.ANDROID_HOME }}
-        key: ${{ runner.os }}-xamarin-android-${{ hashFiles('**/*.sln') }}
