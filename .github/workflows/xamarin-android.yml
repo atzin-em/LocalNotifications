@@ -3,34 +3,48 @@ name: Build Xamarin Android App
 on:
   push:
     branches:
-      - main  # You can change this to the branch you want to trigger the build
+      - main
 
 jobs:
   build:
-    runs-on: windows-latest  # You can use the latest version of Windows runner
+    runs-on: windows-latest
 
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
-      
+
+    - name: Cache dependencies
+      id: cache
+      uses: actions/cache@v2
+      with:
+        path: |
+          ${{ env.USERPROFILE }}\.nuget\packages
+          ${{ env.ANDROID_HOME }}
+        key: ${{ runner.os }}-xamarin-${{ hashFiles('**/*.sln') }}
+        restore-keys: |
+          ${{ runner.os }}-xamarin-
+
     - name: Setup MSBuild
-      uses: microsoft/setup-msbuild@v1.3.1 # This sets up the MSBuild environment on the runner
-    
+      if: steps.cache.outputs.cache-hit != 'true'  # Skip if cache is restored
+      uses: microsoft/setup-msbuild@v1.3.1
+
     - name: Install JDK 11
+      if: steps.cache.outputs.cache-hit != 'true'  # Skip if cache is restored
       uses: actions/setup-java@v2
       with:
-        java-version: '11'  # Set the desired JDK version
-        distribution: 'adopt'  # Use 'adopt' distribution for JDK 11
+        java-version: '11'
+        distribution: 'adopt'
 
     - name: Install Android SDK
+      if: steps.cache.outputs.cache-hit != 'true'  # Skip if cache is restored
       uses: android-actions/setup-android@v2
       with:
-        sdk-platform: '30'  # Replace with the desired SDK platform version
-        ndk-version: '21.4.7075529'  # Replace with the desired NDK version
-        java-version: '11'  # Should match the version you installed above
-        
+        sdk-platform: '30'
+        ndk-version: '21.4.7075529'
+        java-version: '11'
+      
     - name: Setup NuGet
-      uses: NuGet/setup-nuget@v1.0.5  # This sets up NuGet for package restoration
+      uses: NuGet/setup-nuget@v1.0.5
 
     - name: Restore NuGet packages
       run: nuget restore LocalNotifications.sln
@@ -45,3 +59,11 @@ jobs:
     - name: Build Xamarin Android project
       run: msbuild /p:Configuration=Release /t:Rebuild /p:Platform="Any CPU" LocalNotifications.sln 
 
+    - name: Save dependencies to cache
+      if: success()  # Save the cache only if the build was successful
+      uses: actions/cache@v2
+      with:
+        path: |
+          ${{ env.USERPROFILE }}\.nuget\packages
+          ${{ env.ANDROID_HOME }}
+        key: ${{ runner.os }}-xamarin-${{ hashFiles('**/*.sln') }}
