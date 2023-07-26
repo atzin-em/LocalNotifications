@@ -34,13 +34,13 @@ jobs:
         key: ${{ runner.os }}-xamarin-nuget-${{ hashFiles('**/*.sln') }}
         restore-keys: ${{ runner.os }}-xamarin-nuget-
 
-    - name: Cache JDK
-      id: cache-jdk
-      uses: actions/cache@v2
-      with:
-        path: ${{ env.JAVA_HOME }}
-        key: ${{ runner.os }}-xamarin-jdk-${{ hashFiles('**/*.sln') }}
-        restore-keys: ${{ runner.os }}-xamarin-jdk-
+    #- name: Cache JDK
+    #  id: cache-jdk
+    #  uses: actions/cache@v2
+    #  with:
+    #    path: ${{ env.JAVA_HOME }}
+    #    key: ${{ runner.os }}-xamarin-jdk-${{ hashFiles('**/*.sln') }}
+    #    restore-keys: ${{ runner.os }}-xamarin-jdk-
 
     - name: Cache Android SDK
       id: cache-android
@@ -51,7 +51,7 @@ jobs:
         restore-keys: ${{ runner.os }}-xamarin-android-
 
     - name: Install JDK 11
-      if: steps.cache-jdk.outputs.cache-hit != 'true'  # Skip if cache is restored
+    #  if: steps.cache-jdk.outputs.cache-hit != 'true'  # Skip if cache is restored
       uses: actions/setup-java@v2
       with:
         java-version: '11'
@@ -79,12 +79,12 @@ jobs:
         path: ~/.nuget/packages
         key: ${{ runner.os }}-xamarin-nuget-${{ hashFiles('**/*.sln') }}
 
-    - name: Save JDK to cache
-      if: success()  # Save the cache only if the build was successful
-      uses: actions/cache@v2
-      with:
-        path: ${{ env.JAVA_HOME }}
-        key: ${{ runner.os }}-xamarin-jdk-${{ hashFiles('**/*.sln') }}
+    #- name: Save JDK to cache
+    #  if: success()  # Save the cache only if the build was successful
+    #  uses: actions/cache@v2
+    #  with:
+    #    path: ${{ env.JAVA_HOME }}
+    #    key: ${{ runner.os }}-xamarin-jdk-${{ hashFiles('**/*.sln') }}
 
     - name: Save Android SDK to cache
       if: success()  # Save the cache only if the build was successful
