@@ -33,19 +33,12 @@ jobs:
         path: ~/.nuget/packages
         key: ${{ runner.os }}-xamarin-nuget-${{ hashFiles('**/*.sln') }}
         restore-keys: ${{ runner.os }}-xamarin-nuget-
-
-    - name: Create Android SDK directory
-      run: |
-        # Create the Android SDK folder if it doesn't exist
-        if (!(Test-Path $env:ANDROID_HOME)) {
-          New-Item -ItemType Directory -Force -Path $env:ANDROID_HOME
-        }
-
+        
     - name: Cache Android SDK
       id: cache-android
       uses: actions/cache@v2
       with:
-        path: ${{ env.ANDROID_HOME }}
+        path: ${{ ANDROID_SDK_ROOT }}
         key: ${{ runner.os }}-xamarin-android-${{ hashFiles('**/*.sln') }}
         restore-keys: ${{ runner.os }}-xamarin-android-
 
