@@ -12,17 +12,22 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
-
-    - name: Cache dependencies
-      id: cache
+      
+    - name: Cache NuGet packages
+      id: cache-nuget
       uses: actions/cache@v2
       with:
-        path: |
-          ${{ env.USERPROFILE }}\.nuget\packages
-          ${{ env.ANDROID_HOME }}
-        key: ${{ runner.os }}-xamarin-${{ hashFiles('**/*.sln') }}
-        restore-keys: |
-          ${{ runner.os }}-xamarin-
+        path: ~/.nuget/packages
+        key: ${{ runner.os }}-xamarin-nuget-${{ hashFiles('**/*.sln') }}
+        restore-keys: ${{ runner.os }}-xamarin-nuget-
+
+    - name: Cache Android SDK
+      id: cache-android
+      uses: actions/cache@v2
+      with:
+        path: ${{ env.ANDROID_HOME }}
+        key: ${{ runner.os }}-xamarin-android-${{ hashFiles('**/*.sln') }}
+        restore-keys: ${{ runner.os }}-xamarin-android-
 
     - name: Setup MSBuild
       if: steps.cache.outputs.cache-hit != 'true'  # Skip if cache is restored
@@ -59,11 +64,16 @@ jobs:
     - name: Build Xamarin Android project
       run: msbuild /p:Configuration=Release /t:Rebuild /p:Platform="Any CPU" LocalNotifications.sln 
 
-    - name: Save dependencies to cache
+    - name: Save NuGet packages to cache
       if: success()  # Save the cache only if the build was successful
       uses: actions/cache@v2
       with:
-        path: |
-          ${{ env.USERPROFILE }}\.nuget\packages
-          ${{ env.ANDROID_HOME }}
-        key: ${{ runner.os }}-xamarin-${{ hashFiles('**/*.sln') }}
+        path: ~/.nuget/packages
+        key: ${{ runner.os }}-xamarin-nuget-${{ hashFiles('**/*.sln') }}
+
+    - name: Save Android SDK to cache
+      if: success()  # Save the cache only if the build was successful
+      uses: actions/cache@v2
+      with:
+        path: ${{ env.ANDROID_HOME }}
+        key: ${{ runner.os }}-xamarin-android-${{ hashFiles('**/*.sln') }}
