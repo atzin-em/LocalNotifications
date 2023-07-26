@@ -94,7 +94,7 @@ namespace LocalNotifications
                     }
 
                 }
-                return null;
+                return new ResponseNotifications();
             } 
         }
 
@@ -195,8 +195,8 @@ namespace LocalNotifications
 
             buttonSelectNetworks = FindViewById<Button>(Resource.Id.buttonSelectNetworks);
             buttonSelectNetworks.Click += ButtonSelectNetworks_Click;
-            buttonScanNetworks = FindViewById<Button>(Resource.Id.buttonNetScan);
-            buttonScanNetworks.Click += ButtonScanNetworks_Click;
+            //buttonScanNetworks = FindViewById<Button>(Resource.Id.buttonNetScan);
+            //buttonScanNetworks.Click += ButtonScanNetworks_Click;
 
             inputTextApi = FindViewById<EditText>(Resource.Id.inputTextApi);
             buttonSubmitApi = FindViewById<Button>(Resource.Id.buttonSubmitApi);
@@ -240,6 +240,7 @@ namespace LocalNotifications
             LayoutInflater inflater = (LayoutInflater)GetSystemService(LayoutInflaterService);
             View popupView = inflater.Inflate(Resource.Menu.list_view_networks, null);
 
+            int dpi = (int)DeviceDisplay.MainDisplayInfo.Density;
             popupWindow = new PopupWindow(popupView, ViewGroup.LayoutParams.WrapContent, ViewGroup.LayoutParams.WrapContent, true);
 
             Button anchor = (Button)sender;
