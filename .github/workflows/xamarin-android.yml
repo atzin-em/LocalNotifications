@@ -12,6 +12,9 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
+      
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v1.3.1 # This sets up the MSBuild environment on the runner
     
     - name: Install JDK 11
       uses: actions/setup-java@v2
@@ -38,9 +41,6 @@ jobs:
         echo "ANDROID_SDK_ROOT=${{ env.ANDROID_HOME }}" >> $GITHUB_ENV
       env:
         ANDROID_SDK_ROOT: ${{ env.ANDROID_HOME }}
-    
-    - name: Setup MSBuild
-      uses: microsoft/setup-msbuild@v1.0.0  # This sets up the MSBuild environment on the runner
 
     - name: Build Xamarin Android project
       run: msbuild /p:Configuration=Release /t:Rebuild /p:Platform="Any CPU" LocalNotifications.sln  # Replace "YourSolutionName.sln" with your actual solution file
