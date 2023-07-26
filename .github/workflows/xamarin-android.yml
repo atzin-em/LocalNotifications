@@ -13,6 +13,9 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
       
+    - name: Setup NuGet
+      uses: NuGet/setup-nuget@v1.0.5
+      
     - name: Cache NuGet packages
       id: cache-nuget
       uses: actions/cache@v2
@@ -47,9 +50,6 @@ jobs:
         sdk-platform: '30'
         ndk-version: '21.4.7075529'
         java-version: '11'
-      
-    - name: Setup NuGet
-      uses: NuGet/setup-nuget@v1.0.5
 
     - name: Restore NuGet packages
       run: nuget restore LocalNotifications.sln
