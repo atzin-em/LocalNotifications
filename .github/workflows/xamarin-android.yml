@@ -16,7 +16,8 @@ jobs:
     - name: Install JDK 11
       uses: actions/setup-java@v2
       with:
-        java-version: '11'
+        java-version: '11'  # Set the desired JDK version
+        distribution: 'adopt'  # Use 'adopt' distribution for JDK 11
 
     - name: Install Android SDK
       uses: android-actions/setup-android@v2
