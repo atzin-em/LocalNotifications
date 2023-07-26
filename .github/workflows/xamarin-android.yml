@@ -38,7 +38,7 @@ jobs:
       id: cache-android
       uses: actions/cache@v2
       with:
-        path: ${{ ANDROID_SDK_ROOT }}
+        path: ${{ env.ANDROID_SDK_ROOT }}
         key: ${{ runner.os }}-xamarin-android-${{ hashFiles('**/*.sln') }}
         restore-keys: ${{ runner.os }}-xamarin-android-
 
