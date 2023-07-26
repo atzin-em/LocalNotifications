@@ -41,13 +41,7 @@ jobs:
         distribution: 'adopt'
 
     - name: Install Android SDK
-      uses: amyu/setup-android@v2
-      #uses: android-actions/setup-android@v2
-      with:
-        cache-disabled: false
-        sdk-version: '30'
-        ndk-version: '21.4.7075529'
-        #java-version: '11'
+      uses: android-actions/setup-android@v2.0.2
 
     - name: Install NuGet packages
       if: steps.cache-nuget.outputs.cache-hit != 'true'
